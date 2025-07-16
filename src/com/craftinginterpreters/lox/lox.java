@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Scanner;
+import com.craftinginterpreters.lox.Scanner.*;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -36,12 +36,16 @@ public class lox {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
-        for (;;) {
+        while (true) {
             System.out.print(">> ");
             String line = reader.readLine();
             if (line == null) {
                 break;
             }
+            if (line.equals("exit")) {
+                break;
+            }
+
             run(line);
             hadError = false;
         }
