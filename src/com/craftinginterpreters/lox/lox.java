@@ -21,7 +21,6 @@ public class lox {
             runFile(args[0]);
         } else {
             runPrompt();
-
         }
     }
 
