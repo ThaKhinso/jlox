@@ -105,6 +105,9 @@ class RPNPrinter implements Expr.Visitor<String>{
                         new Expr.Literal(46.57)
                 )
         );
+        if (!!!true) {
+            System.out.println("test");
+        }
         System.out.println(new RPNPrinter().Print(expression));
     }
 }
