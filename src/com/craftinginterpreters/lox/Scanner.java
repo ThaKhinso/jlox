@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.craftinginterpreters.lox.TokenType.*;
-import com.craftinginterpreters.lox.lox.*;
+
 public class Scanner {
     private final String source;
     private final List<Token>tokens = new ArrayList<>();
@@ -106,7 +106,7 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 }else {
-                    lox.error(line, "Unexpected Error");
+                    Lox.error(line, "Unexpected Error");
                 }
                 break;
         }
@@ -160,7 +160,7 @@ public class Scanner {
         }
 
         if (isAtEnd()) {
-            lox.error(line, "Unterminated String");
+            Lox.error(line, "Unterminated String");
             return;
         }
 

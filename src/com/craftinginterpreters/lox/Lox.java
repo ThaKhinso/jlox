@@ -7,11 +7,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import com.craftinginterpreters.lox.Scanner.*;
+
+import static com.craftinginterpreters.lox.TokenType.EOF;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class lox {
+public class Lox {
     static boolean hadError = false;
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -56,6 +57,13 @@ public class lox {
         for (Token token: tokens) {
             System.out.println(token);
         }
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
+
+        // Stop if there was a syntax Error
+        if (hadError) return;
+        System.out.println(new AstPrinter().Print(expression));
+
     }
 
     static void error(int line, String message) {
@@ -68,6 +76,14 @@ public class lox {
                 "[line " + line + "] Error" + where + ": " + message
         );
         hadError = true;
+    }
+
+    static void error(Token token, String message) {
+        if (token.type == EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'",message);
+        }
     }
 }
 
