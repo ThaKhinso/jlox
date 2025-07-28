@@ -111,6 +111,12 @@ public class Parser {
         return primary();
     }
 
+    private Stmt expressionStatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expect ';' after expression.");
+        return new Stmt.Expression(expr);
+    }
+
     private Expr primary() {
         if (match(FALSE)) return new Expr.Literal(false);
         if (match(TRUE)) return new Expr.Literal(true);
@@ -126,14 +132,6 @@ public class Parser {
         throw error(peek(), "Expect Expression");
     }
 
-    Expr parse() {
-        try {
-            return expression();
-        } catch (ParseError error) {
-            return null;
-        }
-    }
-
     List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
         while (!isAtEnd()) {
@@ -146,6 +144,12 @@ public class Parser {
         if (match(PRINT)) return printStatement();
 
         return expressionStatement();
+    }
+
+    private Stmt printStatement() {
+        Expr value = expression();
+        consume(SEMICOLON, "Expect ';' after value");
+        return new Stmt.Print(value);
     }
 
     private void synchronize() {
