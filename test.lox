@@ -1,1 +1,4 @@
-print 3
+print "one";
+print true;
+print 2 + 1;
+print ((2 - 9) * 6) / 10;
