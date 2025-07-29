@@ -15,6 +15,6 @@ public class Environment {
             return values.get(name.lexeme);
         }
         throw new RuntimeError(name,
-                "Undefined variable '", name.lexeme + "'.");
+                "Undefined variable '"+ name.lexeme + "'.");
     }
 }
