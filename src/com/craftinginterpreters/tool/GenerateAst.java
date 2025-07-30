@@ -16,6 +16,7 @@ public class GenerateAst {
 //        String outputdir = "C:\\dev\\javaproj\\jlox\\src\\com\\craftinginterpreters\\lox";
         String outputdir = "D:\\Dev\\crafting interpreters\\jlox\\src\\com\\craftinginterpreters\\lox";
         defineAst(outputdir, "Expr", Arrays.asList(
+                "Assign   : Token name, Expr value",
                 "Binary   : Expr left, Token operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
