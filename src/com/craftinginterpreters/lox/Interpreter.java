@@ -14,6 +14,8 @@ public class Interpreter implements Expr.Visitor<Object>,
         return null;
     }
 
+
+
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
         Object value = null;
