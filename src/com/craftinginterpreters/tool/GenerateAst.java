@@ -27,6 +27,7 @@ public class GenerateAst {
         defineAst(outputdir, "Stmt", Arrays.asList(
                 "Block      : List<Stmt> statements",
                 "Expression : Expr expression",
+                "If         : Expr condition, Stmt thenBranch," + " Stmt else Branch",
                 "Print      : Expr expression",
                 "Var        : Token name, Expr initializer"
         ));
