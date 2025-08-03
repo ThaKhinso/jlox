@@ -80,6 +80,7 @@ public class Scanner {
                 break;
             case '<':
                 addToken(match('=') ? LESS_EQUAL : LESS );
+                break;
             case '/':
                 if (match('/')) {
                     while (peek() != '\n' && !isAtEnd()) advance();
