@@ -2,18 +2,19 @@
  var temp;
 
  // this one is fibonacchi
- for (var b = 1; a < 10000; b = temp + b) {
+ /*for (var b = 1; a < 10000; b = temp + b) {
     print a;
     temp = a;
     a = b;
- }
 
+ }*/
 
  var i = 1;
- while(i < 10) {
+ while(i < 100) {
     print i;
     if(i == 9 and i == 9) {
         print "this is 9";
+        break;
     }
     i = i + 1;
  }

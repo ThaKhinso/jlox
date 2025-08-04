@@ -10,6 +10,7 @@ public class Parser {
     private static class ParseError extends RuntimeException{};
     private final List<Token> tokens;
     private int current = 0;
+    private int loop_deapth = 0;
     Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
@@ -146,7 +147,33 @@ public class Parser {
             Expr right = unary();
             return new Expr.Unary(operator, right);
         }
-        return primary();
+        return call();
+    }
+
+    private Expr call() {
+        Expr expr = primary();
+        while (true) {
+            if (match(LEFT_PAREN)) {
+                expr = finishCall(expr);
+            } else {
+                break;
+            }
+        }
+        return expr;
+    }
+
+    private Expr finishCall(Expr callee) {
+        List<Expr> arguments = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (arguments.size() >= 255) {
+                    error(peek(), "Can't have more than 255 arguments");
+                }
+                arguments.add(expression()) ;
+            } while (match(COMMA));
+        }
+        Token paren = consume(RIGHT_PAREN, "Expect ')' after the arguments");
+        return new Expr.Call(callee, paren, arguments);
     }
 
     private Stmt expressionStatement() {
@@ -209,8 +236,18 @@ public class Parser {
         if (match(IF)) return ifStatement();
         if (match(PRINT)) return printStatement();
         if (match(WHILE)) return whileStatement();
+        if (match(BREAK)) return breakStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
         return expressionStatement();
+    }
+
+    private Stmt breakStatement() {
+        if (loop_deapth == 0) {
+            error(previous(), "Can't use 'break' outside of a loop.");
+        }
+
+        consume(SEMICOLON, "Expect ';' after 'break'.");
+        return new Stmt.Break(null, null);
     }
 
     private Stmt forStatement() {
@@ -237,7 +274,14 @@ public class Parser {
         }
         consume(RIGHT_PAREN, "Expect ')' after for clauses.");
 
-        Stmt body = statement();
+        Stmt body;
+        try{
+            loop_deapth++;
+            body = statement();
+        } finally {
+            loop_deapth--;
+        }
+
         if (increment != null) {
             body = new Stmt.Block(
                     Arrays.asList(
@@ -259,9 +303,13 @@ public class Parser {
         consume(LEFT_PAREN, "Expect '(' after 'while'.");
         Expr condition = expression();
         consume(RIGHT_PAREN, "Expect ')' after while expression.");
-        Stmt body = statement();
-
-        return new Stmt.While(condition, body);
+        try {
+            loop_deapth++;
+            Stmt body = statement();
+            return new Stmt.While(condition, body);
+        } finally {
+            loop_deapth--;
+        }
     }
 
     private Stmt ifStatement() {
