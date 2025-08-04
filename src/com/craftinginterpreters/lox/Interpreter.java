@@ -8,8 +8,47 @@ public class Interpreter implements Expr.Visitor<Object>,
                                     Stmt.Visitor<Void>{
     final Environment globals = new Environment();
     private Environment environment = globals;
-    public class BreakException extends RuntimeException {
 
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) {
+        Object value = null;
+        if (stmt.value != null) value = evaluate(stmt.value);
+        throw new Return(value);
+    }
+
+    @Override
+    public Void visitFunctionStmt(Stmt.Function stmt) {
+        LoxFunction function = new LoxFunction(stmt);
+        environment.define(stmt.name.lexeme, function);
+        return null;
+    }
+
+    Interpreter() {
+        globals.define("clock", new LoxCallable() {
+            @Override
+            public int arity() {
+                return 0;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                return (double) System.currentTimeMillis() / 1000.0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native-fn>";
+            }
+        });
+    }
+
+
+
+    public class BreakException extends RuntimeException {
+        BreakException() {
+            super(null, null, false, false);
+
+        }
     }
 
     @Override

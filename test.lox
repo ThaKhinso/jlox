@@ -10,14 +10,17 @@
  }*/
 
  var i = 1;
- while(i < 100) {
-    print i;
-    if(i == 9 and i == 9) {
-        print "this is 9";
-        break;
-    }
-    i = i + 1;
+ fun printloop(first, second) {
+     while(i < 100) {
+        print i;
+        if(i == 9 and i == 9) {
+            print "this is 9";
+            break;
+        }
+        i = i + 1;
+     }
  }
 
- var test = "a";
- print test;
+printloop(1,2);
+var test = "a";
+print test;
