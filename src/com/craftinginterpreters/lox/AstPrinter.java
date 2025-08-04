@@ -44,6 +44,11 @@ class AstPrinter implements Expr.Visitor<String>{
     }
 
     @Override
+    public String visitAnoFuncExpr(Expr.AnoFunc expr) {
+        return "";
+    }
+
+    @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
     }
@@ -78,6 +83,11 @@ class AstPrinter implements Expr.Visitor<String>{
 class RPNPrinter implements Expr.Visitor<String>{
     String Print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitAnoFuncExpr(Expr.AnoFunc expr) {
+        return "";
     }
 
     @Override

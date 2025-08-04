@@ -194,7 +194,9 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
-
+        if (match(FUN)) {
+            return anonymousFuntion("function");
+        }
         if (match(IDENTIFIER)) {
             return new Expr.Variable(previous());
         }
@@ -239,6 +241,27 @@ public class Parser {
         consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
         List<Stmt>body = block();
         return new Stmt.Function(name, parameters, body);
+    }
+
+    private Expr.AnoFunc anonymousFuntion(String kind) {
+        Token name = null;
+        consume(LEFT_PAREN, "Expect '(' after  " + kind + " name.");
+        List<Token>parameters = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (parameters.size() >= 255) {
+                    error(peek(), "Can't have more than 255 parameters.");
+                }
+                parameters.add(
+                        consume(IDENTIFIER, "Expect parameter name.")
+                );
+            } while (match(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters.");
+
+        consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
+        List<Stmt>body = block();
+        return new Expr.AnoFunc(parameters, body);
     }
 
     private Stmt varDeclaration() {
