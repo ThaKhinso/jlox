@@ -6,3 +6,21 @@
 thrice(fun (a) {
  print a;
  });
+
+ var crapf = fun(dd) {
+    return dd = dd + 1;
+ };
+
+ var s = crapf(3);
+ print crapf(3);
+
+ var a = "global";
+ {
+    fun showA() {
+        print a;
+    }
+
+    showA();
+    var a = "local";
+    showA();
+ }
