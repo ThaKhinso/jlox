@@ -12,7 +12,7 @@ public class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Object visitAnoFuncExpr(Expr.AnoFunc expr) {
         LoxFunction function = new LoxFunction(expr, environment);
-        return null;
+        return function;
     }
 
     @Override

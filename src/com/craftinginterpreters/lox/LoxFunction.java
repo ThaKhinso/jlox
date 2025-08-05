@@ -44,7 +44,11 @@ public class LoxFunction implements LoxCallable {
 
     @Override
     public int arity() {
-        return declaration.params.size();
+        if (declaration != null) {
+            return declaration.params.size();
+        } else  {
+            return declarationAno.params.size();
+        }
     }
 
     @Override
