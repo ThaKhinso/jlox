@@ -67,6 +67,8 @@ public class Lox {
 //        System.out.println("Parse successed");
         // Stop if there was a syntax Error
         if (hadError) return;
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
         interpreter.interpret(statements);
 
     }

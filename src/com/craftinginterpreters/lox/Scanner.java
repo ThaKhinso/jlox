@@ -34,6 +34,7 @@ public class Scanner {
         keywords.put("true", TRUE);
         keywords.put("var", VAR);
         keywords.put("while", WHILE);
+        keywords.put("break", BREAK);
 
     }
 
@@ -80,11 +81,12 @@ public class Scanner {
                 break;
             case '<':
                 addToken(match('=') ? LESS_EQUAL : LESS );
+                break;
             case '/':
                 if (match('/')) {
                     while (peek() != '\n' && !isAtEnd()) advance();
                 } else if (match('*')) {
-                    while (peek() != '*' && peekNext() != '/') advance();
+                    while (peek() != '*' && peekNext() != '/' && !isAtEnd()) advance();
                     current += 2;
                 }else {
                     addToken(SLASH);

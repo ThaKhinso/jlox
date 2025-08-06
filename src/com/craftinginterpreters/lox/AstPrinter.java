@@ -6,7 +6,18 @@ class AstPrinter implements Expr.Visitor<String>{
     }
 
     @Override
+    public String visitCallExpr(Expr.Call expr) {
+        return "";
+    }
+
+
+    @Override
     public String visitAssignExpr(Expr.Assign expr) {
+        return "";
+    }
+
+    @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
         return "";
     }
 
@@ -30,6 +41,11 @@ class AstPrinter implements Expr.Visitor<String>{
     public String visitLiteralExpr(Expr.Literal expr) {
         if (expr.value == null) return "nil";
         return expr.value.toString();
+    }
+
+    @Override
+    public String visitAnoFuncExpr(Expr.AnoFunc expr) {
+        return "";
     }
 
     @Override
@@ -67,6 +83,21 @@ class AstPrinter implements Expr.Visitor<String>{
 class RPNPrinter implements Expr.Visitor<String>{
     String Print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitAnoFuncExpr(Expr.AnoFunc expr) {
+        return "";
+    }
+
+    @Override
+    public String visitLogicalExpr(Expr.Logical expr) {
+        return "";
+    }
+
+    @Override
+    public String visitCallExpr(Expr.Call expr) {
+        return "";
     }
 
     @Override
