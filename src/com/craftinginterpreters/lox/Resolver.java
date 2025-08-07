@@ -30,7 +30,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitAnoFuncExpr(Expr.AnoFunc expr) {
-        resolve(expr);
+        resolveFunction(expr.params, expr.body, FunctionType.FUNCTION_TYPE);
         return null;
     }
 
@@ -82,6 +82,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitReturnStmt(Stmt.Return stmt) {
+        if(currentFunction == FunctionType.NONE) {
+            Lox.error(stmt.keyword, "Can't return from top-level code.");
+        }
         if (stmt.value != null) {
             resolve(stmt.value);
         }
@@ -208,5 +211,19 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     private void endScope() {
         scopes.pop();
+    }
+
+    // And the helper method it calls:
+    private void resolveFunction(List<Token> params, List<Stmt> body, FunctionType type) {
+        FunctionType enclosingFunction = currentFunction;
+        currentFunction = type;
+        beginScope();
+        for (Token param : params) {
+            declare(param);
+            define(param);
+        }
+        resolve(body);
+        endScope();
+        currentFunction = enclosingFunction;
     }
 }
