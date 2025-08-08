@@ -244,7 +244,7 @@ public class Parser {
     }
 
     private Expr.AnoFunc anonymousFuntion(String kind) {
-        Token name = null;
+
         consume(LEFT_PAREN, "Expect '(' after  " + kind + " name.");
         List<Token>parameters = new ArrayList<>();
         if (!check(RIGHT_PAREN)) {
