@@ -17,6 +17,9 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         FUNCTION_TYPE
     };
     private FunctionType currentFunction = FunctionType.NONE;
+
+
+
     @Override
     public Void visitVariableExpr(Expr.Variable expr) {
         if (!scopes.isEmpty() &&
@@ -129,6 +132,13 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitLiteralExpr(Expr.Literal expr) {
+        return null;
+    }
+
+    @Override
+    public Void visitClassStmt(Stmt.Class stmt) {
+        declare(stmt.name);
+        define(stmt.name);
         return null;
     }
 

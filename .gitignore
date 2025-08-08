@@ -25,5 +25,8 @@ bin/
 ### VS Code ###
 .vscode/
 
+*.exe
+*.jar
+
 ### Mac OS ###
 .DS_Store

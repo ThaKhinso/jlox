@@ -1,0 +1,11 @@
+class Devonshirecream {
+    serveOn() {
+        return "Stones";
+    }
+}
+
+print Devonshirecream;
+
+class Bagel {}
+var a = Bagel();
+print a;
