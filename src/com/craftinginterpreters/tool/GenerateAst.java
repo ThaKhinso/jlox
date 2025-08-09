@@ -13,8 +13,8 @@ public class GenerateAst {
 //            System.err.println("Usage: generate_ast <output directory>");
 //            System.exit(64);
 //        }
-//        String outputdir = "C:\\dev\\javaproj\\jlox\\src\\com\\craftinginterpreters\\lox";
-        String outputdir = "D:\\Dev\\crafting interpreters\\jlox\\src\\com\\craftinginterpreters\\lox";
+        String outputdir = "C:\\dev\\javaproj\\jlox\\src\\com\\craftinginterpreters\\lox";
+//        String outputdir = "D:\\Dev\\crafting interpreters\\jlox\\src\\com\\craftinginterpreters\\lox";
         defineAst(outputdir, "Expr", Arrays.asList(
                 "Assign   : Token name, Expr value",
                 "Binary   : Expr left, Token operator, Expr right",
@@ -23,6 +23,7 @@ public class GenerateAst {
                 "Grouping : Expr expression",
                 "Literal  : Object value",
                 "Logical  : Expr left, Token operator, Expr right",
+                "Set      : Expr object, Token name, Expr value",
                 "Unary    : Token operator, Expr right",
                 "AnoFunc  : List<Token> params, List<Stmt> body",
                 "Variable : Token name"
