@@ -11,6 +11,11 @@ class AstPrinter implements Expr.Visitor<String>{
     }
 
     @Override
+    public String visitSetExpr(Expr.Set expr) {
+        return "";
+    }
+
+    @Override
     public String visitCallExpr(Expr.Call expr) {
         return "";
     }
@@ -88,6 +93,11 @@ class AstPrinter implements Expr.Visitor<String>{
 class RPNPrinter implements Expr.Visitor<String>{
     String Print(Expr expr) {
         return expr.accept(this);
+    }
+
+    @Override
+    public String visitSetExpr(Expr.Set expr) {
+        return "";
     }
 
     @Override
