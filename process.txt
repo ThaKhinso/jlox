@@ -1,0 +1,28 @@
+# Set your GraalVM installation path
+$GRAALVM_HOME = "C:\graalvm"
+
+# Define tool paths (updated for native-image.cmd)
+$javac = Join-Path $GRAALVM_HOME "bin\javac.exe"
+$jarTool = Join-Path $GRAALVM_HOME "bin\jar.exe"
+$nativeImage = Join-Path $GRAALVM_HOME "bin\native-image.cmd"
+
+# Navigate to your project directory
+cd "C:\path\to\your-project"
+
+# Clean and create build directory
+Remove-Item -Recurse -Force -ErrorAction SilentlyContinue build
+New-Item -ItemType Directory -Force -Path build
+
+# Compile Java source files
+& $javac -d build @(
+    Get-ChildItem -Recurse -Filter *.java -Path src | ForEach-Object { $_.FullName }
+)
+
+# Package into a JAR
+& $jarTool --create --file=lox.jar --main-class=com.craftinginterpreters.lox.Lox -C build .
+
+# Build native executable (call .cmd properly)
+cmd /c `"$nativeImage -jar lox.jar`"
+
+# Done
+Write-Host "`n✅ Native image built successfully: .\lox.exe"

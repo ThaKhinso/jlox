@@ -9,12 +9,21 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     private final Interpreter interpreter;
     private final Stack<Map<String, Boolean>> scopes = new Stack<>();
 
+    private enum ClassType {
+        NONE,
+        CLASS,
+        STATIC_CLASS
+    };
+
+    private ClassType currentClass = ClassType.NONE;
+
     Resolver(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
     private enum FunctionType {
         NONE,
         FUNCTION_TYPE,
+        INITIALIZER,
         METHOD
     };
     private FunctionType currentFunction = FunctionType.NONE;
@@ -101,6 +110,10 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(stmt.keyword, "Can't return from top-level code.");
         }
         if (stmt.value != null) {
+            if (currentFunction == FunctionType.INITIALIZER) {
+                Lox.error(stmt.keyword,
+                        "Can't return a value from an initializer.");
+            }
             resolve(stmt.value);
         }
         return null;
@@ -148,13 +161,37 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     @Override
+    public Void visitThisExpr(Expr.This expr) {
+        if (currentClass == ClassType.NONE || currentClass == ClassType.STATIC_CLASS) {
+            Lox.error(expr.keyword,
+                    "Can't use 'this' ouside of a class");
+            return null;
+        }
+        resolveLocal(expr, expr.keyword);
+        return null;
+    }
+
+    @Override
     public Void visitClassStmt(Stmt.Class stmt) {
+        ClassType enclosingClass = currentClass;
+        currentClass = ClassType.CLASS;
         declare(stmt.name);
         define(stmt.name);
+        beginScope();
+        scopes.peek().put("this", true);
         for(Stmt.Function method : stmt.methods) {
             FunctionType declaration = FunctionType.METHOD;
+            if (method.name.lexeme.equals("init")) {
+                declaration = FunctionType.INITIALIZER;
+            }
             resolveFunction(method, declaration);
         }
+        currentClass = ClassType.STATIC_CLASS;
+        for (Stmt.Function method: stmt.staticmethods) {
+            resolveFunction(method, FunctionType.FUNCTION_TYPE);
+        }
+        endScope();
+        currentClass = enclosingClass;
         return null;
     }
 

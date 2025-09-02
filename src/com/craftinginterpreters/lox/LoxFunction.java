@@ -6,16 +6,31 @@ public class LoxFunction implements LoxCallable {
     private final Stmt.Function declaration;
     private final Expr.AnoFunc declarationAno;
     private final Environment closure;
-    LoxFunction(Stmt.Function declaration, Environment closure) {
+    private final boolean isInitializer;
+    private final boolean isStaticMethod;
+    LoxFunction(Stmt.Function declaration, Environment closure,
+                boolean isInitializer, boolean isStaticMethod) {
         this.closure = closure;
         this.declaration = declaration;
         this.declarationAno = null;
+        this.isInitializer = isInitializer;
+        this.isStaticMethod = isStaticMethod;
     }
 
-    LoxFunction(Expr.AnoFunc declaration, Environment closure) {
+    LoxFunction(Expr.AnoFunc declaration, Environment closure,
+                boolean isInitializer) {
         this.declarationAno = declaration;
         this.closure = closure;
         this.declaration = null;
+        this.isInitializer = isInitializer;
+        this.isStaticMethod = false;
+    }
+
+    LoxFunction bind(LoxInstance instance) {
+        Environment environment = new Environment(closure);
+        if (isStaticMethod) return new LoxFunction(declaration, environment, isInitializer, isStaticMethod);
+        environment.define("this", instance);
+        return new LoxFunction(declaration, environment, isInitializer, isStaticMethod);
     }
 
     @Override
@@ -39,6 +54,7 @@ public class LoxFunction implements LoxCallable {
         } catch (Return returnvalue) {
             return returnvalue.value;
         }
+        if (isInitializer) return closure.getAt(0, "this");
         return null;
     }
 

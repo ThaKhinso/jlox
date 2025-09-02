@@ -12,10 +12,14 @@ public class Interpreter implements Expr.Visitor<Object>,
     private Environment environment = globals;
     public final Map<Expr, Integer> locals = new HashMap<>();
 
+    @Override
+    public Object visitThisExpr(Expr.This expr) {
+        return lookUpVariable(expr.keyword, expr);
+    }
 
     @Override
     public Object visitAnoFuncExpr(Expr.AnoFunc expr) {
-        LoxFunction function = new LoxFunction(expr, environment);
+        LoxFunction function = new LoxFunction(expr, environment, false);
         return function;
     }
 
@@ -30,18 +34,28 @@ public class Interpreter implements Expr.Visitor<Object>,
     public Void visitClassStmt(Stmt.Class stmt) {
         environment.define(stmt.name.lexeme, null);
         Map<String, LoxFunction> methods = new HashMap<>();
+        Map<String, LoxFunction> staticMethods = new HashMap<>();
         for (Stmt.Function method: stmt.methods) {
-            LoxFunction function = new LoxFunction(method, environment);
+
+            LoxFunction function = new LoxFunction(method, environment,
+                    method.name.lexeme.equals("init"), false);
             methods.put(method.name.lexeme, function);
         }
-        LoxClass Class = new LoxClass(stmt.name.lexeme, methods);
+
+        for (Stmt.Function method: stmt.staticmethods) {
+            LoxFunction function = new LoxFunction(method, environment,
+                    false, true);
+            staticMethods.put(method.name.lexeme, function);
+        }
+        LoxClass Class = new LoxClass(stmt.name.lexeme, methods, staticMethods );
         environment.assign(stmt.name, Class);
         return null;
     }
 
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
-        LoxFunction function = new LoxFunction(stmt, environment);
+        LoxFunction function = new LoxFunction(stmt, environment,
+                false, false);
         environment.define(stmt.name.lexeme, function);
         return null;
     }
@@ -105,6 +119,12 @@ public class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Object visitGetExpr(Expr.Get expr) {
         Object object = evaluate(expr.object);
+        if (object instanceof LoxClass) {
+            LoxFunction staticMethod = ((LoxClass)object).findStaticMethods(expr.name.lexeme);
+            if (staticMethod != null) {
+                return staticMethod;
+            }
+        }
         if (object instanceof LoxInstance) {
             return ((LoxInstance) object).get(expr.name);
         }

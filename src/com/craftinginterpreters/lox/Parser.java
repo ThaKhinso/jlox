@@ -203,6 +203,7 @@ public class Parser {
         if (match(FUN)) {
             return anonymousFuntion("function");
         }
+        if (match(THIS)) return new Expr.This(previous());
         if (match(IDENTIFIER)) {
             return new Expr.Variable(previous());
         }
@@ -220,7 +221,7 @@ public class Parser {
     private Stmt declaration() {
         try {
             if (match(CLASS)) return classDeclaration();
-            if (match(FUN)) return function("function");
+            if (match(FUN)) return function("function", false);
             if (match(VAR)) return varDeclaration();
             return statement();
         } catch (ParseError error) {
@@ -234,15 +235,21 @@ public class Parser {
         consume(LEFT_BRACE, "Expect '{' before class body.");
 
         List<Stmt.Function> methods = new ArrayList<>();
+        List<Stmt.Function> staticMethods = new ArrayList<>();
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
-            methods.add(function("methods"));
+            if (match(CLASS)) {
+                staticMethods.add(function("methods", true));
+            }
+            else {
+                methods.add(function("methods", false));
+            }
         }
 
         consume(RIGHT_BRACE, "Expect '}' after class body.");
-        return new Stmt.Class(name, methods);
+        return new Stmt.Class(name, methods, staticMethods);
     }
 
-    private Stmt.Function function(String kind) {
+    private Stmt.Function function(String kind, boolean isStatic) {
         Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
         consume(LEFT_PAREN, "Expect '(' after  " + kind + " name.");
         List<Token>parameters = new ArrayList<>();
@@ -260,7 +267,7 @@ public class Parser {
 
         consume(LEFT_BRACE, "Expect '{' before " + kind + " body.");
         List<Stmt>body = block();
-        return new Stmt.Function(name, parameters, body);
+        return new Stmt.Function(name, parameters, body, isStatic);
     }
 
     private Expr.AnoFunc anonymousFuntion(String kind) {

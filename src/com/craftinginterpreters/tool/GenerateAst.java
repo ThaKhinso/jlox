@@ -13,8 +13,8 @@ public class GenerateAst {
 //            System.err.println("Usage: generate_ast <output directory>");
 //            System.exit(64);
 //        }
-        String outputdir = "C:\\dev\\javaproj\\jlox\\src\\com\\craftinginterpreters\\lox";
-//        String outputdir = "D:\\Dev\\crafting interpreters\\jlox\\src\\com\\craftinginterpreters\\lox";
+//        String outputdir = "C:\\dev\\javaproj\\jlox\\src\\com\\craftinginterpreters\\lox";
+        String outputdir = "D:\\Dev\\crafting interpreters\\jlox\\src\\com\\craftinginterpreters\\lox";
         defineAst(outputdir, "Expr", Arrays.asList(
                 "Assign   : Token name, Expr value",
                 "Binary   : Expr left, Token operator, Expr right",
@@ -24,6 +24,7 @@ public class GenerateAst {
                 "Literal  : Object value",
                 "Logical  : Expr left, Token operator, Expr right",
                 "Set      : Expr object, Token name, Expr value",
+                "This     : Token keyword",
                 "Unary    : Token operator, Expr right",
                 "AnoFunc  : List<Token> params, List<Stmt> body",
                 "Variable : Token name"
@@ -31,9 +32,9 @@ public class GenerateAst {
 
         defineAst(outputdir, "Stmt", Arrays.asList(
                 "Block      : List<Stmt> statements",
-                "Class      : Token name, List<Stmt.Function> methods",
+                "Class      : Token name, List<Stmt.Function> methods, List<Stmt.Function> staticmethods",
                 "Expression : Expr expression",
-                "Function   : Token name, List<Token> params," + " List<Stmt> body",
+                "Function   : Token name, List<Token> params," + " List<Stmt> body," + " boolean isStatic",
                 "If         : Expr condition, Stmt thenBranch," + " Stmt else_Branch",
                 "Print      : Expr expression",
                 "Return     : Token keyword, Expr value",
