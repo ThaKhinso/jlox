@@ -6,6 +6,11 @@ class AstPrinter implements Expr.Visitor<String>{
     }
 
     @Override
+    public String visitSuperExpr(Expr.Super expr) {
+        return "";
+    }
+
+    @Override
     public String visitThisExpr(Expr.This expr) {
         return "";
     }
@@ -102,6 +107,11 @@ class RPNPrinter implements Expr.Visitor<String>{
 
     @Override
     public String visitThisExpr(Expr.This expr) {
+        return "";
+    }
+
+    @Override
+    public String visitSuperExpr(Expr.Super expr) {
         return "";
     }
 
